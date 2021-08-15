@@ -1,0 +1,189 @@
+( Macros )
+%RET { JMP2r }
+
+( Devices )
+
+|00 @System
+  &vector $2
+  &pad $6
+  &r $2
+  &g $2
+  &b $2
+|20 @Screen
+  &vector $2
+  &width $2
+  &height $2
+  &pad $2
+  &x $2
+  &y $2
+  &addr $2
+  &color $1
+|80 @Controller
+  &vector $2
+  &button $1
+  &key $1
+
+|0000
+
+@frame-index $2
+@wait-time $2
+@cursor $2
+@playing $1
+
+( Program )
+
+|0100
+
+( Theme )
+#0f88 .System/r DEO2
+#0f88 .System/g DEO2
+#0f88 .System/b DEO2
+
+( Vectors )
+;on-controller .Controller/vector DEO2
+;on-frame .Screen/vector DEO2
+
+( Variables )
+#0000 .frame-index STZ2
+#0000 .wait-time STZ2
+;data .cursor STZ2
+#00 .playing STZ
+
+BRK
+
+@on-controller ( -> )
+      #01 .playing STZ ( Set the playing flag )
+
+      BRK
+
+@on-frame ( -> )
+      .playing LDZ #00 EQU
+      ,&end JCN
+
+      .frame-index LDZ2 STOP-TIME EQU2
+      ,&end JCN
+
+      .wait-time LDZ2 #0000 NEQ2
+      ,&wait JCN
+
+      FRAME-TIME .wait-time STZ2 ( Reset wait time )
+
+      ,draw-frame JSR
+
+      .frame-index LDZ2 #0001 ADD2 .frame-index STZ2 ( Increment frame index )
+
+      &wait
+        .wait-time LDZ2 #0001 SUB2 .wait-time STZ2 ( Decrement wait time )
+
+      &end
+        BRK
+
+@draw-frame ( -- -> )
+      #0000 #0000 INITIAL-COLOR STH ( x^ y^ , color )
+
+      &loop
+        DUP2 VIDEO-HEIGHT EQU2 ( x^ y^ cond , color )
+        ,&end JCN
+
+        STHrk ( x^ y^ color , color )
+
+        .cursor LDZ2 LDA ( Load next run ) ( x^ y^ color run , color )
+        ,draw-run JSR ( new-x^ new-y^ , color )
+        .cursor LDZ2 #0001 ADD2 .cursor STZ2 ( Increment cursor )
+        LITr 00 EQUr ( Toggle color )
+
+        ,&loop JMP
+
+      &end
+        POP2 POP2 POPr
+
+        RET
+
+@draw-run ( x^ y^ color run -- new-x^ new-y^ -> )
+      SWP STH ( x^ y^ run , color )
+
+      &loop
+        DUP #00 EQU
+        ,&end JCN
+
+        ( Draw fragment on the screen )
+
+        STH OVR2 OVR2 OVRr STHr ( x^ y^ x^ y^ color , color run )
+        ,draw-fragment JSR ( x^ y^ , color run )
+
+        ( Decrement run )
+        LITr 01 SUBr ( x^ y^ , color run-1 )
+
+        ( Increment x and y and return if OOB )
+
+        SWP2 #0001 ADD2 SWP2 ( x+1^ y^ , color run )
+
+        OVR2 VIDEO-WIDTH EQU2 ( Is the x coordinate equal to the video width? )
+        ,&rollover-y JCN
+
+        STHr ( x+1^ y^ run , color )
+
+        ,&loop JMP
+
+        &rollover-y
+          #0001 ADD2 ( x^ y+1^ , color run )
+          SWP2 POP2 #0000 SWP2 ( Reset x to zero )
+
+          DUP2 VIDEO-HEIGHT EQU2 ( Is the y coordinate equal to the video height? )
+          ,&early-return JCN
+
+          STHr ( x^ y+1^ run , color )
+
+          ,&loop JMP
+
+          &early-return
+            POP2r ( x^ y^ , )
+
+            RET
+
+        &end
+          POP POPr ( x^ y^ , )
+
+          RET
+
+@draw-fragment ( x^ y^ color -- -> )
+      ( Stash )
+      #00 SWP ( x^ y^ color^ , )
+      STH2 ( x^ y^ , color^ )
+      FRAGMENT-HEIGHT MUL2 Y-OFFSET ADD2 STH2 ( x^ , color^ y^ )
+      FRAGMENT-WIDTH MUL2 X-OFFSET ADD2 STH2 ( , color^ y^ x^ )
+
+      #0000 ( row-index^ , color^ y^ x^ )
+
+      &row-loop
+        DUP2 FRAGMENT-HEIGHT EQU2 ( Is the row index greater than the fragment height? )
+        ,&end JCN
+
+        #0000 ( row-index^ column-index^ , color^ y^ x^ )
+
+        &column-loop
+          DUP2 FRAGMENT-WIDTH EQU2 ( Is the column index greater than the fragment width? )
+          ,&end-row JCN
+
+          ( row-index^ column-index^ , color^ y^ x^ )
+
+          ( Draw pixel at x+column-index,y+row-index )
+          DUP2 STH2rk ADD2 .Screen/x DEO2 ( row-index^ column-index^ , color^ y^ x^ )
+          OVR2 OVR2r STH2r ADD2 .Screen/y DEO2 ( row-index^ column-index^ , color^ y^ x^ )
+          ROT2r STHrk ROT2r ROT2r #10 ADD .Screen/color DEO ( row-index^ column-index^ , color^ y^ x^ )
+
+          #0001 ADD2 ( Increment the column index )
+
+          ,&column-loop JMP
+
+          &end-row
+            POP2
+            #0001 ADD2 ( Increment the row index )
+
+            ,&row-loop JMP
+
+        &end
+          POP2
+          POP2r POP2r POP2r
+
+          RET

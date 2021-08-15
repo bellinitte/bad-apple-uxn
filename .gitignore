@@ -1,0 +1,12 @@
+.DS_Store
+target/
+frames/
+venv/
+bad_apple.mp4
+*.png
+.vscode/
+badapple.tal
+*.hex
+*.swp
+*.rom
+*.bin

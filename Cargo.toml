@@ -1,0 +1,13 @@
+[package]
+name = "bad-apple-generator"
+version = "0.1.0"
+authors = ["Karol Belina <karolbelina@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0"
+ffmpeg-next = "4.4"
+image = "0.23"
+indicatif = "0.16"
+itertools = "0.10"
+structopt = "0.3"
