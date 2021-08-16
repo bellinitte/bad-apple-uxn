@@ -19,7 +19,7 @@ uxnemu badapple.rom
 - Display resolution of 42x32 pixels,
 - 810 frames of video (3.75 frames per second),
 - 1-bit images,
-- Compressed with [run-length encoding](https://en.wikipedia.org/wiki/Run-length_encoding),
+- Compressed with [run-length encoding](https://en.wikipedia.org/wiki/Run-length_encoding), 1 byte per run, alternating runs with no markers,
 - 63375 bytes,
 - No audio
 
@@ -48,6 +48,15 @@ Before running, make sure you have the [Uxn toolchain](https://git.sr.ht/~rabbit
 uxnemu badapple.rom
 ```
 This should open a window. When you're ready, press any button on your keyboard to start the video.
+
+## Tweaking
+
+You can tweak various constants in the `( Tweakables )` section of the resulting `.tal` file before the assembly.
+- `X-OFFSET` and `Y-OFFSET` &mdash; define the video offset in screen pixels from the top-left corner of the screen, can be used for centering,
+- `FRAGMENT-WIDTH` and `FRAGMENT-HEIGHT` &mdash; define the size of the "video pixel", can be used for scaling the video to various screen sizes,
+- `VIDEO-WIDTH` and `VIDEO-HEIGHT` &mdash; self-explanatory, can be used for _making visual glitches_,
+- `FRAME-TIME` &mdash; number of [Varvara](https://wiki.xxiivv.com/site/varvara.html) screen frames per each video frame. `#0001` means a 60 FPS video (video frame every screen frame), `#0010` means a _60 / 16 =_ 3.75 FPS video (video frame every 16 screen frames),
+- `STOP-TIME` &mdash; frame index after which the rendering terminates.
 
 ## License
 
