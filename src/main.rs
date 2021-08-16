@@ -19,14 +19,17 @@ mod encoder;
 mod renderer;
 mod trimmer;
 
-const X_OFFSET: u16 = 46;
-const Y_OFFSET: u16 = 0;
+const SCREEN_WIDTH: u16 = 512;
+const SCREEN_HEIGHT: u16 = 320;
 const VIDEO_WIDTH: u16 = 42;
 const VIDEO_HEIGHT: u16 = 32;
-const FRAGMENT_WIDTH: u16 = 10;
-const FRAGMENT_HEIGHT: u16 = FRAGMENT_WIDTH;
 const STEP: u16 = 8;
 const COLOR_THRESHOLD: u8 = 128;
+
+const X_OFFSET: u16 = (SCREEN_WIDTH - FRAGMENT_WIDTH * VIDEO_WIDTH) / 2;
+const Y_OFFSET: u16 = (SCREEN_HEIGHT - FRAGMENT_HEIGHT * VIDEO_HEIGHT) / 2;
+const FRAGMENT_WIDTH: u16 = FRAGMENT_HEIGHT;
+const FRAGMENT_HEIGHT: u16 = SCREEN_HEIGHT / VIDEO_HEIGHT;
 const INPUT_FRAMES_ESTIMATE: u64 = 6571 / STEP as u64;
 
 #[derive(Debug, StructOpt)]
