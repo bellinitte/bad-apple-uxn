@@ -1,5 +1,5 @@
 [package]
-name = "bad-apple-generator"
+name = "bad-apple-uxn"
 version = "1.0.0"
 authors = ["Karol Belina <karolbelina@gmail.com>"]
 edition = "2018"
