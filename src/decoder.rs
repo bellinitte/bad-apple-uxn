@@ -1,6 +1,6 @@
+use anyhow::{anyhow, Result};
 use ffmpeg_next as ffmpeg;
 use image::GrayImage;
-use anyhow::{anyhow, Result};
 
 pub struct Decoder<'a> {
     packets: ffmpeg::format::context::input::PacketIter<'a>,
@@ -14,7 +14,7 @@ pub trait Decode<'a> {
 }
 
 impl<'a> Decode<'a> for ffmpeg::format::context::Input {
-    fn decode(&'a mut self) -> Result<Decoder<'a>>{
+    fn decode(&'a mut self) -> Result<Decoder<'a>> {
         Decoder::new(self)
     }
 }
@@ -70,7 +70,7 @@ impl<'a> Iterator for Decoder<'a> {
         if self.decoder.send_eof().is_ok() {
             return self.receive_decoded_frames().transpose();
         }
-        
+
         None
     }
 }
@@ -86,12 +86,8 @@ impl<'a> Decoder<'a> {
         let mut rgb_frame = ffmpeg::util::frame::video::Video::empty();
         self.scaler.run(&decoded, &mut rgb_frame)?;
 
-        let data: Vec<u8> = rgb_frame
-            .data(0)
-            .chunks(3)
-            .map(|chunk| chunk[0])
-            .collect();
-        
+        let data: Vec<u8> = rgb_frame.data(0).chunks(3).map(|chunk| chunk[0]).collect();
+
         Ok(GrayImage::from_raw(
             rgb_frame.width(),
             rgb_frame.height(),

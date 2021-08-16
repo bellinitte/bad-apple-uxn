@@ -78,7 +78,7 @@ BRK
       &end
         BRK
 
-@draw-frame ( -- -> )
+@draw-frame ( -- )
       #0000 #0000 INITIAL-COLOR STH ( x^ y^ , color )
 
       &loop
@@ -99,7 +99,7 @@ BRK
 
         RET
 
-@draw-run ( x^ y^ color run -- new-x^ new-y^ -> )
+@draw-run ( x^ y^ color run -- new-x^ new-y^ )
       SWP STH ( x^ y^ run , color )
 
       &loop
@@ -146,7 +146,7 @@ BRK
 
           RET
 
-@draw-fragment ( x^ y^ color -- -> )
+@draw-fragment ( x^ y^ color -- )
       ( Stash )
       #00 SWP ( x^ y^ color^ , )
       STH2 ( x^ y^ , color^ )

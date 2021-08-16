@@ -1,8 +1,12 @@
 [package]
 name = "bad-apple-generator"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Karol Belina <karolbelina@gmail.com>"]
 edition = "2018"
+description = "Bad Apple!! for the Uxn stack-machine"
+readme = "README.md"
+repository = "https://github.com/karolbelina/bad-apple-uxn"
+license = "MIT"
 
 [dependencies]
 anyhow = "1.0"
@@ -10,4 +14,6 @@ ffmpeg-next = "4.4"
 image = "0.23"
 indicatif = "0.16"
 itertools = "0.10"
+ruxnasm = { version = "*", default-features = false }
 structopt = "0.3"
+textwrap = "0.14"
