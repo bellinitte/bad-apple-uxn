@@ -35,9 +35,9 @@
 |0100
 
 ( Theme )
-#0f88 .System/r DEO2
-#0f88 .System/g DEO2
-#0f88 .System/b DEO2
+#0f77 .System/r DEO2
+#0f77 .System/g DEO2
+#0f77 .System/b DEO2
 
 ( Vectors )
 ;on-controller .Controller/vector DEO2

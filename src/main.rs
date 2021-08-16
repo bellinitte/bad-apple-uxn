@@ -17,6 +17,7 @@ use structopt::StructOpt;
 mod decoder;
 mod encoder;
 mod renderer;
+mod trimmer;
 
 const X_OFFSET: u16 = 46;
 const Y_OFFSET: u16 = 0;
@@ -71,6 +72,9 @@ fn main() -> Result<()> {
 
     progress_bar.finish();
 
+    let encoded_frames =
+        trimmer::trim_frames(encoded_frames, VIDEO_WIDTH as usize * VIDEO_HEIGHT as usize);
+
     let tweakables: Vec<(&'static str, Value)> = vec![
         ("X-OFFSET", X_OFFSET.into()),
         ("Y-OFFSET", Y_OFFSET.into()),
@@ -78,7 +82,7 @@ fn main() -> Result<()> {
         ("FRAGMENT-HEIGHT", FRAGMENT_HEIGHT.into()),
         ("VIDEO-WIDTH", VIDEO_WIDTH.into()),
         ("VIDEO-HEIGHT", VIDEO_HEIGHT.into()),
-        ("FRAME-TIME", (STEP * 2).into()),
+        ("FRAME-TIME", (STEP * 2).into()), // 60 FPS Varvara screen vs 30 FPS input video
         ("STOP-TIME", (encoded_frames.len() as u16).into()),
         ("INITIAL-COLOR", (INITIAL_COLOR as u8).into()),
     ];
