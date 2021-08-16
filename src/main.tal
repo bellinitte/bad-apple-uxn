@@ -79,7 +79,7 @@ BRK
         BRK
 
 @draw-frame ( -- )
-      #0000 #0000 INITIAL-COLOR STH ( x^ y^ , color )
+      #0000 #0000 LITr 00 ( x^ y^ , color )
 
       &loop
         DUP2 VIDEO-HEIGHT EQU2 ( x^ y^ cond , color )

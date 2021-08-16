@@ -26,7 +26,6 @@ const VIDEO_HEIGHT: u16 = 32;
 const FRAGMENT_WIDTH: u16 = 10;
 const FRAGMENT_HEIGHT: u16 = FRAGMENT_WIDTH;
 const STEP: u16 = 8;
-const INITIAL_COLOR: bool = false;
 const COLOR_THRESHOLD: u8 = 128;
 const INPUT_FRAMES_ESTIMATE: u64 = 6571 / STEP as u64;
 
@@ -84,7 +83,6 @@ fn main() -> Result<()> {
         ("VIDEO-HEIGHT", VIDEO_HEIGHT.into()),
         ("FRAME-TIME", (STEP * 2).into()), // 60 FPS Varvara screen vs 30 FPS input video
         ("STOP-TIME", (encoded_frames.len() as u16).into()),
-        ("INITIAL-COLOR", (INITIAL_COLOR as u8).into()),
     ];
 
     let source_string = render_uxntal(encoded_frames, tweakables);
