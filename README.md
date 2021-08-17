@@ -7,7 +7,7 @@ Bad Apple!! for the [Uxn](https://wiki.xxiivv.com/site/uxn.html) stack-machine b
 ## Quick start
 
 ```console
-cargo run -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
+cargo run --release -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
 ```
 or download the `badapple.rom` file from the [releases page](https://github.com/karolbelina/bad-apple-uxn/releases).
 ```console
@@ -25,15 +25,15 @@ uxnemu badapple.rom
 
 ## Building
 
-This repository contains the project needed to build the `.tal` file from scratch. If you are interested only in downloading and running the file, check out the [Running](Running) section.
+This repository contains the project needed to build the `.tal` file from scratch. If you are interested only in downloading and running the file, check out the [Running](#running) section.
 
-Make sure you have the most recent release of [Rust](https://www.rust-lang.org/), as well as FFmpeg libraries installed on your system (check out [this guide](https://github.com/zmwangx/rust-ffmpeg/wiki/Notes-on-building) for more information on how to get them). Run the `cargo run` command with the path to the input MP4 file, as well as paths to the output files, like so:
+Make sure you have the most recent release of [Rust](https://www.rust-lang.org/), as well as FFmpeg libraries installed on your system (check out [this guide](https://github.com/zmwangx/rust-ffmpeg/wiki/Notes-on-building) for more information on how to get them). Run the `cargo run` command with the `--release` profile, as well as the path to the input MP4 file and paths to the output files, like so:
 ```console
-cargo run -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
+cargo run --release -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
 ```
-This should compile the project and run the whole build process. Please note that it may take quite a long time.
+This should compile the project and run the whole build process.
 
-You can omit the `--rom` flag if you want to assemble the ROM from the `.tal` file yourself. To do that, run
+You can omit the `--rom` argument if you want to assemble the ROM from the `.tal` file yourself. To do that, run
 ```console
 uxnasm badapple.tal badapple.rom
 ```
