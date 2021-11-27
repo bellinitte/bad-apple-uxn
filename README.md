@@ -1,13 +1,14 @@
 # bad-apple-uxn
 
-Bad Apple!! for the [Uxn](https://wiki.xxiivv.com/site/uxn.html) stack-machine by [Hundred Rabbits](https://github.com/hundredrabbits).
+Bad Apple!! for the [Uxn](https://100r.co/site/uxn.html) stack-machine by [Hundred Rabbits](https://100r.co/site/home.html).
 
 [![Youtube video thumbnail](https://img.youtube.com/vi/YfCyzwASzJ4/0.jpg)](https://www.youtube.com/watch?v=YfCyzwASzJ4)
 
 ## Quick start
 
 ```console
-cargo run --release -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
+cargo run --release -- --input assets/badapple.mp4 --output badapple.tal
+uxnasm badapple.tal badapple.rom
 ```
 or download the `badapple.rom` file from the [releases page](https://github.com/karolbelina/bad-apple-uxn/releases).
 ```console
@@ -29,15 +30,15 @@ This repository contains the project needed to build the `.tal` file from scratc
 
 Make sure you have the most recent release of [Rust](https://www.rust-lang.org/), as well as FFmpeg libraries installed on your system (check out [this guide](https://github.com/zmwangx/rust-ffmpeg/wiki/Notes-on-building) for more information on how to get them). Run the `cargo run` command with the `--release` profile, as well as the path to the input MP4 file and paths to the output files, like so:
 ```console
-cargo run --release -- --input assets/badapple.mp4 --output badapple.tal --rom badapple.rom
+cargo run --release -- --input assets/badapple.mp4 --output badapple.tal
 ```
 This should compile the project and run the whole build process.
 
-You can omit the `--rom` argument if you want to assemble the ROM from the `.tal` file yourself. To do that, run
+You have to assemble the ROM from the `.tal` file yourself. To do that, run
 ```console
 uxnasm badapple.tal badapple.rom
 ```
-to assemble the ROM with [Uxnasm](https://git.sr.ht/~rabbits/uxn/tree/master/item/src/uxnasm.c).
+to assemble the ROM with [Uxnasm](https://git.sr.ht/~rabbits/uxn/tree/main/item/src/uxnasm.c).
 
 ## Running
 
