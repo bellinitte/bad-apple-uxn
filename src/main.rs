@@ -38,8 +38,6 @@ struct Args {
     video_path: PathBuf,
     #[structopt(short = "o", long = "output")]
     uxntal_path: PathBuf,
-    #[structopt(short = "r", long = "rom")]
-    rom_path: Option<PathBuf>,
 }
 
 fn main() -> Result<()> {
@@ -91,12 +89,6 @@ fn main() -> Result<()> {
     let source_string = render_uxntal(encoded_frames, tweakables);
 
     fs::write(args.uxntal_path, &source_string)?;
-
-    if let Some(rom_path) = args.rom_path {
-        let binary = ruxnasm::assemble(&source_string).unwrap().0;
-
-        fs::write(rom_path, &binary)?;
-    }
 
     Ok(())
 }
