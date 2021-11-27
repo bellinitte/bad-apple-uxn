@@ -28,7 +28,11 @@ impl From<u16> for Value {
     }
 }
 
-pub fn render_uxntal(data: Vec<Vec<u8>>, constants: Vec<(&'static str, Value)>, tweakables: Vec<(&'static str, Value)>) -> String {
+pub fn render_uxntal(
+    data: Vec<Vec<u8>>,
+    constants: Vec<(&'static str, Value)>,
+    tweakables: Vec<(&'static str, Value)>,
+) -> String {
     let mut source = String::new();
 
     write!(
@@ -74,13 +78,6 @@ fn render_values(source: &mut String, values: Vec<(&'static str, Value)>) {
         .0
         .len();
     for (name, value) in values {
-        write!(
-            source,
-            "%{:pad$} {{ #{} }}\n",
-            name,
-            value,
-            pad = pad
-        )
-        .unwrap();
+        write!(source, "%{:pad$} {{ #{} }}\n", name, value, pad = pad).unwrap();
     }
 }
