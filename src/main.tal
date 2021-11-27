@@ -70,7 +70,7 @@ BRK
 
       ,draw-frame JSR
 
-      .frame-index LDZ2 #0001 ADD2 .frame-index STZ2 ( Increment frame index )
+      .frame-index LDZ2 INC2 .frame-index STZ2 ( Increment frame index )
 
       &wait
         .wait-time LDZ2 #0001 SUB2 .wait-time STZ2 ( Decrement wait time )
@@ -89,7 +89,7 @@ BRK
 
         .cursor LDZ2 LDA ( Load next run ) ( x^ y^ color run , color )
         ,draw-run JSR ( new-x^ new-y^ , color )
-        .cursor LDZ2 #0001 ADD2 .cursor STZ2 ( Increment cursor )
+        .cursor LDZ2 INC2 .cursor STZ2 ( Increment cursor )
         LITr 00 EQUr ( Toggle color )
 
         ,&loop JMP
@@ -116,7 +116,7 @@ BRK
 
         ( Increment x and y and return if OOB )
 
-        SWP2 #0001 ADD2 SWP2 ( x+1^ y^ , color run )
+        SWP2 INC2 SWP2 ( x+1^ y^ , color run )
 
         OVR2 VIDEO-WIDTH EQU2 ( Is the x coordinate equal to the video width? )
         ,&rollover-y JCN
@@ -126,7 +126,7 @@ BRK
         ,&loop JMP
 
         &rollover-y
-          #0001 ADD2 ( x^ y+1^ , color run )
+          INC2 ( x^ y+1^ , color run )
           SWP2 POP2 #0000 SWP2 ( Reset x to zero )
 
           DUP2 VIDEO-HEIGHT EQU2 ( Is the y coordinate equal to the video height? )
@@ -172,13 +172,13 @@ BRK
           OVR2 OVR2r STH2r ADD2 .Screen/y DEO2 ( row-index^ column-index^ , color^ y^ x^ )
           ROT2r STHrk ROT2r ROT2r #10 ADD .Screen/color DEO ( row-index^ column-index^ , color^ y^ x^ )
 
-          #0001 ADD2 ( Increment the column index )
+          INC2 ( Increment the column index )
 
           ,&column-loop JMP
 
           &end-row
             POP2
-            #0001 ADD2 ( Increment the row index )
+            INC2 ( Increment the row index )
 
             ,&row-loop JMP
 
