@@ -1,6 +1,6 @@
 # bad-apple-uxn
 
-Bad Apple!! for the [Uxn](https://100r.co/site/uxn.html) stack-machine by [Hundred Rabbits](https://100r.co/site/home.html).
+Bad Apple!! for the [Uxn](https://100r.co/site/uxn.html) stack-machine by [Hundred Rabbits](https://100r.co).
 
 [![Youtube video thumbnail](https://img.youtube.com/vi/YfCyzwASzJ4/0.jpg)](https://www.youtube.com/watch?v=YfCyzwASzJ4)
 
