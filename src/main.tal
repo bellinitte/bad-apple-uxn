@@ -1,10 +1,12 @@
 ( Macros )
 %RET { JMP2r }
+%DEC2 { #0001 SUB2 }
+%HALF2  { #01 SFT2 }
+%MIN2 { LTH2k JMP SWP2 POP2 }
 
 ( Devices )
-
-|00 @System &vector $2 &pad $6 &r $2 &g $2 &b $2
-|20 @Screen &vector $2 &width $2 &height $2 &pad $2 &x $2 &y $2 &addr $2 &pixel $1
+|00 @System &vector $2 $6 &r $2 &g $2 &b $2
+|20 @Screen &vector $2 &width $2 &height $2 &auto $1 $1 &x $2 &y $2 &addr $2 &pixel $1
 |80 @Controller &vector $2 &button $1 &key $1
 
 |0000
@@ -13,6 +15,8 @@
 @wait-time $2
 @cursor $2
 @playing $1
+@Offset &x $2 &y $2
+@scale $2
 
 ( Program )
 
@@ -23,17 +27,38 @@
 #0f77 .System/g DEO2
 #0f77 .System/b DEO2
 
+;init-screen JSR2
+
 ( Vectors )
 ;on-controller .Controller/vector DEO2
 ;on-frame .Screen/vector DEO2
 
 ( Variables )
-#0000 .frame-index STZ2
-#0000 .wait-time STZ2
 ;data .cursor STZ2
-#00 .playing STZ
 
 BRK
+
+@init-screen ( -- )
+  VIDEO-WIDTH DEFAULT-SCALE MUL2 DUP2 .Screen/width DEO2 ( desired-width^ , )
+  VIDEO-HEIGHT DEFAULT-SCALE MUL2 DUP2 .Screen/height DEO2 ( desired-width^ desired-height^ , )
+
+  .Screen/height DEI2 NEQ2 STH ( desired-width^ , cond )
+  .Screen/width DEI2 NEQ2 STHr ORA ,&size-differs JCN
+
+  DEFAULT-SCALE .scale STZ2
+
+  RET
+
+  &size-differs
+    .Screen/width DEI2 VIDEO-WIDTH DIV2
+    .Screen/height DEI2 VIDEO-HEIGHT DIV2
+    MIN2 ( scale^ , )
+
+    DUP2 VIDEO-WIDTH MUL2 .Screen/width DEI2 SWP2 SUB2 HALF2 .Offset/x STZ2 ( scale^ , )
+    DUP2 VIDEO-HEIGHT MUL2 .Screen/height DEI2 SWP2 SUB2 HALF2 .Offset/y STZ2 ( scale^ , )
+    .scale STZ2
+
+    RET
 
 @on-controller ( -> )
   #01 .playing STZ ( Set the playing flag )
@@ -57,7 +82,7 @@ BRK
   .frame-index LDZ2 INC2 .frame-index STZ2 ( Increment frame index )
 
   &wait
-    .wait-time LDZ2 #0001 SUB2 .wait-time STZ2 ( Decrement wait time )
+    .wait-time LDZ2 DEC2 .wait-time STZ2 ( Decrement wait time )
 
   &end
     BRK
@@ -134,19 +159,19 @@ BRK
   ( Stash )
   #00 SWP ( x^ y^ color^ , )
   STH2 ( x^ y^ , color^ )
-  FRAGMENT-HEIGHT MUL2 Y-OFFSET ADD2 STH2 ( x^ , color^ y^ )
-  FRAGMENT-WIDTH MUL2 X-OFFSET ADD2 STH2 ( , color^ y^ x^ )
+  .scale LDZ2 MUL2 .Offset/y LDZ2 ADD2 STH2 ( x^ , color^ y^ )
+  .scale LDZ2 MUL2 .Offset/x LDZ2 ADD2 STH2 ( , color^ y^ x^ )
 
   #0000 ( row-index^ , color^ y^ x^ )
 
   &row-loop
-    DUP2 FRAGMENT-HEIGHT EQU2 ( Is the row index greater than the fragment height? )
+    DUP2 .scale LDZ2 EQU2 ( Is the row index greater than the fragment height? )
     ,&end JCN
 
     #0000 ( row-index^ column-index^ , color^ y^ x^ )
 
     &column-loop
-      DUP2 FRAGMENT-WIDTH EQU2 ( Is the column index greater than the fragment width? )
+      DUP2 .scale LDZ2 EQU2 ( Is the column index greater than the fragment width? )
       ,&end-row JCN
 
       ( row-index^ column-index^ , color^ y^ x^ )
@@ -154,7 +179,7 @@ BRK
       ( Draw pixel at x+column-index,y+row-index )
       DUP2 STH2rk ADD2 .Screen/x DEO2 ( row-index^ column-index^ , color^ y^ x^ )
       OVR2 OVR2r STH2r ADD2 .Screen/y DEO2 ( row-index^ column-index^ , color^ y^ x^ )
-      ROT2r STHrk ROT2r ROT2r #10 ADD .Screen/pixel DEO ( row-index^ column-index^ , color^ y^ x^ )
+      ROT2r STHrk ROT2r ROT2r .Screen/pixel DEO ( row-index^ column-index^ , color^ y^ x^ )
 
       INC2 ( Increment the column index )
 

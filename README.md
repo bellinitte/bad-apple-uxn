@@ -52,12 +52,9 @@ This should open a window. When you're ready, press any button on your keyboard 
 
 ## Tweaking
 
-You can tweak various constants in the `( Tweakables )` section of the resulting `.tal` file before the assembly.
-- `X-OFFSET` and `Y-OFFSET` &mdash; define the video offset in screen pixels from the top-left corner of the screen, can be used for centering,
-- `FRAGMENT-WIDTH` and `FRAGMENT-HEIGHT` &mdash; define the size of the "video pixel", can be used for scaling the video to various screen sizes,
-- `VIDEO-WIDTH` and `VIDEO-HEIGHT` &mdash; self-explanatory, can be used for _making visual glitches_,
-- `FRAME-TIME` &mdash; number of [Varvara](https://wiki.xxiivv.com/site/varvara.html) screen frames per each video frame. `#0001` means a 60 FPS video (video frame every screen frame), `#0010` means a _60 / 16 =_ 3.75 FPS video (video frame every 16 screen frames),
-- `STOP-TIME` &mdash; frame index after which the rendering terminates.
+You can tweak various constants in the `( Tweakables )` section of the final `.tal` file before the assembly.
+- `DEFAULT-SCALE` &mdash; defines the default width and height of the "video pixel" on screens with unconstrained size.
+- `FRAME-TIME` &mdash; number of [Varvara](https://wiki.xxiivv.com/site/varvara.html) screen frames per each video frame. `#0001` means a 60 FPS video (video frame every screen frame), `#0010` means a _60 / 16 =_ 3.75 FPS video (video frame every 16 screen frames).
 
 ## License
 

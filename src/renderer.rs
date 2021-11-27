@@ -28,12 +28,12 @@ impl From<u16> for Value {
     }
 }
 
-pub fn render_uxntal(data: Vec<Vec<u8>>, tweakables: Vec<(&'static str, Value)>) -> String {
+pub fn render_uxntal(data: Vec<Vec<u8>>, constants: Vec<(&'static str, Value)>, tweakables: Vec<(&'static str, Value)>) -> String {
     let mut source = String::new();
 
     write!(
         &mut source,
-        "(\n{}\n)\n\n(\n  {}\n  v{}\n  {}\n)\n\n( Tweakables )\n\n",
+        "(\n{}\n)\n\n(\n  {}\n  v{}\n  {}\n)\n\n( Constants )\n",
         indent(include_str!("../LICENSE").trim(), "  "),
         env!("CARGO_PKG_DESCRIPTION"),
         env!("CARGO_PKG_VERSION"),
@@ -41,22 +41,11 @@ pub fn render_uxntal(data: Vec<Vec<u8>>, tweakables: Vec<(&'static str, Value)>)
     )
     .unwrap();
 
-    let tweakable_pad: usize = tweakables
-        .iter()
-        .max_by_key(|(name, _)| name.len())
-        .unwrap()
-        .0
-        .len();
-    for (name, value) in tweakables {
-        write!(
-            &mut source,
-            "%{:pad$} {{ #{} }}\n",
-            name,
-            value,
-            pad = tweakable_pad
-        )
-        .unwrap();
-    }
+    render_values(&mut source, constants);
+
+    write!(&mut source, "\n( Tweakables )\n").unwrap();
+
+    render_values(&mut source, tweakables);
 
     write!(&mut source, "\n{}\n@data\n", include_str!("main.tal")).unwrap();
 
@@ -75,4 +64,23 @@ pub fn render_uxntal(data: Vec<Vec<u8>>, tweakables: Vec<(&'static str, Value)>)
     }
 
     source
+}
+
+fn render_values(source: &mut String, values: Vec<(&'static str, Value)>) {
+    let pad: usize = values
+        .iter()
+        .max_by_key(|(name, _)| name.len())
+        .unwrap()
+        .0
+        .len();
+    for (name, value) in values {
+        write!(
+            source,
+            "%{:pad$} {{ #{} }}\n",
+            name,
+            value,
+            pad = pad
+        )
+        .unwrap();
+    }
 }

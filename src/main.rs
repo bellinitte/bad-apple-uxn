@@ -19,17 +19,11 @@ mod encoder;
 mod renderer;
 mod trimmer;
 
-const SCREEN_WIDTH: u16 = 512;
-const SCREEN_HEIGHT: u16 = 320;
 const VIDEO_WIDTH: u16 = 42;
 const VIDEO_HEIGHT: u16 = 32;
+const DEFAULT_SCALE: u16 = 10;
 const STEP: u16 = 8;
 const COLOR_THRESHOLD: u8 = 128;
-
-const X_OFFSET: u16 = (SCREEN_WIDTH - FRAGMENT_WIDTH * VIDEO_WIDTH) / 2;
-const Y_OFFSET: u16 = (SCREEN_HEIGHT - FRAGMENT_HEIGHT * VIDEO_HEIGHT) / 2;
-const FRAGMENT_WIDTH: u16 = FRAGMENT_HEIGHT;
-const FRAGMENT_HEIGHT: u16 = SCREEN_HEIGHT / VIDEO_HEIGHT;
 const INPUT_FRAMES_ESTIMATE: u64 = 6571 / STEP as u64;
 
 #[derive(Debug, StructOpt)]
@@ -75,18 +69,18 @@ fn main() -> Result<()> {
     let encoded_frames =
         trimmer::trim_frames(encoded_frames, VIDEO_WIDTH as usize * VIDEO_HEIGHT as usize);
 
-    let tweakables: Vec<(&'static str, Value)> = vec![
-        ("X-OFFSET", X_OFFSET.into()),
-        ("Y-OFFSET", Y_OFFSET.into()),
-        ("FRAGMENT-WIDTH", FRAGMENT_WIDTH.into()),
-        ("FRAGMENT-HEIGHT", FRAGMENT_HEIGHT.into()),
+    let constants: Vec<(&'static str, Value)> = vec![
         ("VIDEO-WIDTH", VIDEO_WIDTH.into()),
         ("VIDEO-HEIGHT", VIDEO_HEIGHT.into()),
-        ("FRAME-TIME", (STEP * 2).into()), // 60 FPS Varvara screen vs 30 FPS input video
         ("STOP-TIME", (encoded_frames.len() as u16).into()),
     ];
 
-    let source_string = render_uxntal(encoded_frames, tweakables);
+    let tweakables: Vec<(&'static str, Value)> = vec![
+        ("DEFAULT-SCALE", DEFAULT_SCALE.into()),
+        ("FRAME-TIME", (STEP * 2).into()), // 60 FPS Varvara screen vs 30 FPS input video
+    ];
+
+    let source_string = render_uxntal(encoded_frames, constants, tweakables);
 
     fs::write(args.uxntal_path, &source_string)?;
 
