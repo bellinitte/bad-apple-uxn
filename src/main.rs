@@ -1,6 +1,5 @@
 use anyhow::Result;
-use decoder::Decode;
-use encoder::encode;
+use clap::Parser;
 use ffmpeg::format::input;
 use ffmpeg_next as ffmpeg;
 use image::{
@@ -9,15 +8,16 @@ use image::{
 };
 use indicatif::ProgressBar;
 use itertools::Itertools;
-use renderer::{render_uxntal, Value};
-use std::fs;
-use std::path::PathBuf;
-use structopt::StructOpt;
+use std::{fs, path::PathBuf};
 
 mod decoder;
 mod encoder;
 mod renderer;
 mod trimmer;
+
+use self::decoder::Decode;
+use self::encoder::encode;
+use self::renderer::{render_uxntal, Value};
 
 const VIDEO_WIDTH: u16 = 42;
 const VIDEO_HEIGHT: u16 = 32;
@@ -26,16 +26,16 @@ const STEP: u16 = 8;
 const COLOR_THRESHOLD: u8 = 128;
 const INPUT_FRAMES_ESTIMATE: u64 = 6571 / STEP as u64;
 
-#[derive(Debug, StructOpt)]
+#[derive(Debug, Parser)]
 struct Args {
-    #[structopt(short = "i", long = "input")]
+    #[clap(short = 'i', long = "input", value_parser)]
     video_path: PathBuf,
-    #[structopt(short = "o", long = "output")]
+    #[clap(short = 'o', long = "output", value_parser)]
     uxntal_path: PathBuf,
 }
 
 fn main() -> Result<()> {
-    let args = Args::from_args();
+    let args = Args::parse();
 
     ffmpeg::init().unwrap();
 

@@ -1,3 +1,5 @@
+// Adapted from https://github.com/zmwangx/rust-ffmpeg/blob/master/examples/dump-frames.rs
+
 use anyhow::{anyhow, Result};
 use ffmpeg_next as ffmpeg;
 use image::GrayImage;
@@ -27,7 +29,9 @@ impl<'a> Decoder<'a> {
             .ok_or(ffmpeg::Error::StreamNotFound)?;
         let video_stream_index = input_stream.index();
 
-        let decoder = input_stream.codec().decoder().video()?;
+        let context_decoder =
+            ffmpeg::codec::context::Context::from_parameters(input_stream.parameters())?;
+        let decoder = context_decoder.decoder().video()?;
 
         let scaler = ffmpeg::software::scaling::Context::get(
             decoder.format(),

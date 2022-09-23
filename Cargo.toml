@@ -1,6 +1,6 @@
 [package]
 name = "bad-apple-uxn"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Karol Belina <karolbelina@gmail.com>"]
 edition = "2018"
 description = "Bad Apple!! for the Uxn stack-machine"
@@ -10,9 +10,9 @@ license = "MIT"
 
 [dependencies]
 anyhow = "1.0"
-ffmpeg-next = "4.4"
-image = "0.23"
-indicatif = "0.16"
+clap = { version = "3.2", features = ["derive"] }
+ffmpeg-next = "5.1"
+image = "0.24"
+indicatif = "0.17"
 itertools = "0.10"
-structopt = "0.3"
-textwrap = "0.14"
+textwrap = "0.15"
